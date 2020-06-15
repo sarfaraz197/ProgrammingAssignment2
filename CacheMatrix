@@ -1,39 +1,47 @@
-makeCacheMatrix <- function(x = matrix()) {
-  inv <- NULL
-  set <- function(y) {
-    x <<- y
-    inv <<- NULL
+
+## This function creates a special "matrix" object that catche its inverse
+
+makeCacheMatrix <- function(x = matrix())         ## define the argument with default mode "matrix"
+{ 
+  inv <- NULL                                     ## iniialize inv as NULL which will hold value of matrix inverse    
+  set <- function(y) {                            ## deine the set function to assign new
+
+    x <<- y                                       ## value of matrix in parent environment
+    inv <<- NULL                                  ## incase of a new matrix,reset inv to NULL
   }
-  get <- function() x
-  setInverse <- function(inverse) inv <<- inverse
-  getInverse <- function() inv
-  list(set = set,
+  get <- function() x                             ## define the get function -returns value of matrix
+  setInverse <- function(inverse) inv <<- inverse ## assigns value of inv in parent environment 
+  
+  getInverse <- function() inv                    ## gets the value of inv where called
+  list(set = set,                                 ## you need this function in order to refer       
        get = get,
        setInverse = setInverse,
        getInverse = getInverse)
 }
-
+## This function computes the inverse of the special "matrix" returned by makeCacheMatrix
+## if the inverse has already been calculated 
+## then cacheSolve will retrieve the inverse from the cache.
 cacheSolve <- function(x, ...) {
-  
-  iv <- x$getInverse()
+  ##Return a matrix that is the inverse of 'x'
+  iv <- x$getInverse()        
   if (!is.null(iv)) 
     {
     message("getting cached data")
-    return(iv)
+    return(iv)         ## returns the inverse of the data
   }
     
   else
   {
     mat <- x$get()
-    j <- solve(mat,...)
+    j <- solve(mat,...)  
     x$setInverse(j)
-    j
+    j ## prints the data in a matrix
   }
 }
 
 
-f <- makeCacheMatrix(matrix(1:4, 2, 2))
-print(cacheSolve(f))
+f <- makeCacheMatrix(matrix(1:4, 2, 2))## calls the function of makeCacheMatrix
+print(cacheSolve(f)) ##prints the data by calling the function
 
 
-print(cacheSolve(matrix(1:4, 2, 2)))
+print(cacheSolve(matrix(1:4, 2, 2)))  ## calls the function and prints the data.
